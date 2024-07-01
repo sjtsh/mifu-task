@@ -20,7 +20,7 @@ Globals:
             Variables:
                 REGION: !Ref AWS::Region
                 ACCOUNTID: !Ref AWS::AccountId
-                DYNAMO_LOCAL_ENDPT: !Ref AWS::DYNAMO_LOCAL_ENDPT
+                DYNAMO_LOCAL_ENDPT: 'http://host.docker.internal:8000'
 
 Resources:
     TrialTablePolicy:

@@ -3,8 +3,8 @@
     "version": "1.0.0",
     "description": "Packages for Mifu API",
     "scripts": {
-        "build": "sam build --template app.yaml",
-        "dev": "sam local invoke FunctionPerformance --template app.yaml",
+        "build": "sam build --template local.yaml",
+        "dev": "sam local invoke FunctionPerformance --template local.yaml",
         "test1": "yarn dev -e mock/mock_daily.json"
     },
     "repository": {
