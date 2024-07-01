@@ -1,0 +1,8 @@
+{
+    "Parameters": {
+      "ENV": "dev",
+      "DATA_ENV": "dev",
+      "REGION": "eu-west-1",
+      "ACCOUNTID": "711671779242"
+    }
+  }

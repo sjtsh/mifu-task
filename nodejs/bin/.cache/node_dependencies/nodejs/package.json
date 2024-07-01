@@ -1,0 +1,27 @@
+{
+  "name": "mifu_api",
+  "version": "1.0.0",
+  "description": "Packages for Mifu API",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mifumarketing/mifu_api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mifumarketing/mifu_api/issues"
+  },
+  "homepage": "https://github.com/mifumarketing/mifu_api#readme",
+  "dependencies": {
+    "@opensearch-project/opensearch": "^2.4.0",
+    "yup": "^1.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.39.0",
+    "typescript": "^5.4.2"
+  }
+}

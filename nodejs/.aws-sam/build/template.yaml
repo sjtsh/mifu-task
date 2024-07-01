@@ -1,0 +1,170 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Mifu BE Trial Application
+Globals:
+  Function:
+    Runtime: nodejs16.x
+    MemorySize: 256
+    Timeout: 60
+    Tracing: Active
+    Architectures:
+    - arm64
+    Tags:
+      user:Application: BeTrial
+      user:Stack:
+        Fn::Sub: BE Trial
+    Layers:
+    - Ref: LayerNodeModules
+    - Ref: LayerServices
+    - Ref: LayerUtils
+    Environment:
+      Variables:
+        REGION:
+          Ref: AWS::Region
+        ACCOUNTID:
+          Ref: AWS::AccountId
+        DYNAMO_LOCAL_ENDPT: http://host.docker.internal:8000
+Resources:
+  TrialTablePolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName:
+        Fn::Sub: Mifu_Trial_WriteInflencersTable
+      Path: /
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - dynamodb:PutItem
+          - dynamodb:BatchWriteItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          - dynamodb:GetItem
+          - dynamodb:Query
+          - dynamodb:Scan
+          Resource:
+            Fn::Sub: arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/mifu_trial_db
+  RoleApiGateway:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: /
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+            - edgelambda.amazonaws.com
+            - apigateway.amazonaws.com
+          Action: sts:AssumeRole
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/AmazonAPIGatewayInvokeFullAccess
+      - arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaRole
+  ApiGatewayStage:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      StageName: v1
+      RestApiId:
+        Ref: ApiGatewayRestApi
+      DeploymentId:
+        Ref: ApiDeployment
+  ApiGatewayRestApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name:
+        Fn::Sub: Mifu BE Trial API
+      Description: Mifu BE Dev Trial API
+      EndpointConfiguration:
+        Types:
+        - EDGE
+  HealthResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Fn::GetAtt:
+        - ApiGatewayRestApi
+        - RootResourceId
+      PathPart: health
+      RestApiId:
+        Ref: ApiGatewayRestApi
+  HealthMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: POST
+      ResourceId:
+        Ref: HealthResource
+      RestApiId:
+        Ref: ApiGatewayRestApi
+      AuthorizationType: NONE
+      RequestParameters:
+        method.request.path.creator: true
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${FunctionHealth.Arn}/invocations
+  ApiDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn: HealthMethod
+    Properties:
+      RestApiId:
+        Ref: ApiGatewayRestApi
+      Description: Deployment for v1 stage
+  LayerServices:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName:
+        Fn::Sub: BE_Trial__services-layer
+      Description: Service dependencies for the Mifu Trial Application
+      ContentUri: ..\..\bin\.cache\services-layer
+      CompatibleRuntimes:
+      - nodejs16.x
+      CompatibleArchitectures:
+      - arm64
+  LayerUtils:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName:
+        Fn::Sub: BE_Trial__utils-layer
+      Description: Utilities required for the Mifu Trial Application
+      ContentUri: ..\..\bin\.cache\utils-layer
+      CompatibleRuntimes:
+      - nodejs16.x
+      CompatibleArchitectures:
+      - arm64
+  LayerNodeModules:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName:
+        Fn::Sub: BE_Trial__node_modules-layer
+      Description: node_modules required for the Mifu Trial Application
+      ContentUri: ..\..\bin\.cache\node_dependencies
+      CompatibleRuntimes:
+      - nodejs16.x
+      CompatibleArchitectures:
+      - arm64
+  FunctionHealth:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.handler
+      CodeUri: FunctionHealth
+      Description: API Health Endpoint
+      Policies:
+      - AWSLambdaBasicExecutionRole
+      - AWSLambda_ReadOnlyAccess
+    Metadata:
+      SamResourceId: FunctionHealth
+  FunctionPerformance:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: index.handler
+      CodeUri: FunctionPerformance
+      Description: API Performance Endpoint
+      Policies:
+      - AWSLambdaBasicExecutionRole
+      - AWSLambda_ReadOnlyAccess
+    Metadata:
+      SamResourceId: FunctionPerformance

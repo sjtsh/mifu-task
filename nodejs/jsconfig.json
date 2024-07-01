@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "/opt/nodejs/services/*": [
+        "services/*"
+      ],
+
+      "/opt/nodejs/utils/*": [
+        "utils/*"
+      ]
+    }
+  }
+}

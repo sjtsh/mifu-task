@@ -1,0 +1,53 @@
+[
+    {
+      "_index": "mifu",
+      "_id": "i_58911719460",
+      "_score": 1,
+      "_source": {
+        "name": "Michelle Yeoh 楊紫瓊",
+        "bio": "Oscar-Winning Actress | Producer | @undp Goodwill Ambassador",
+        "followers_count": 15,
+        "stats": {
+          "average_comments": "1355",
+          "average_likes": "176789",
+          "average_views": "284367",
+          "eng_rate": "7.47",
+          "posts": "12",
+          "post_price": "2500",
+          "post_reach": "1717093",
+          "reach": "1907882",
+          "story_price": "1250",
+          "story_reach": "515128"
+        }
+      }
+    },
+    {
+      "_index": "mifu",
+      "_id": "i_1781785064",
+      "_score": 1,
+      "_source": {
+        "name": "Thomas Skinner",
+        "bio": """🤵Business Owner
+📺TV Personality 
+🥊Gym Owner @boshgym 
+⚒West Ham
+👨🏼‍🍳MasterChef
+❤️Love My Friends & Family
+📧Enquiries: bosh@tom-skinner.co.uk
+⭐️BOSH!""",
+        "followers_count": 308080,
+        "stats": {
+          "story_reach": "66545",
+          "average_views": "89837",
+          "eng_rate": "2.16",
+          "reach": "246464",
+          "average_likes": "6489",
+          "post_price": "2500",
+          "story_price": "1250",
+          "average_comments": "162",
+          "posts": "12",
+          "post_reach": "221818"
+        }
+      }
+    }
+  ]
